@@ -1,0 +1,12 @@
+attributes:
+  coupon:
+    type: float
+    tolerance: 0.01
+  cfi_code:
+    type: string
+    ignore_case: true
+    trim: true
+  maturity_date:
+    type: date
+  callable_flag:
+    type: bool
