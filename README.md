@@ -13,7 +13,7 @@ PYTHONPATH=src .venv/bin/python -m pytest -vv
 OR
 .venv/bin/python -m pytest -vv
 .venv/bin/python -m pytest -q
-(.venv) /Users/kartikmakker/Kartik_Workspace/Python_Projects/security_recon $  .venv/bin/python -m pytest -q
+(.venv) ../../security_recon $  .venv/bin/python -m pytest -q
 3 passed in 0.76s
 ```
 
