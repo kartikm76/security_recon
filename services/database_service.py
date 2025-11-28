@@ -1,10 +1,7 @@
 """High-level helpers for working with both MySQL and Postgres."""
 from __future__ import annotations
-
 from sqlalchemy import text
-
 from core.database import DatabaseManager, db_manager
-
 
 class DatabaseService:
     def __init__(self, manager: DatabaseManager = db_manager):
