@@ -1,11 +1,14 @@
 ## Setup
-
 ```bash
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
-python3 application.py
 ```
-# Tests
+## Execution
+```bash
+PYTHONPATH=src .venv/bin/python
+python3 application.py
+
+```bash
 PYTHONPATH=src .venv/bin/python -m pytest -vv
 OR
 .venv/bin/python -m pytest -vv
@@ -15,7 +18,6 @@ OR
 ```
 
 ## Project layout
-
 ```
 security_recon/
 ├── app/
