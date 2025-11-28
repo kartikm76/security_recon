@@ -12,6 +12,7 @@ python3 application.py
 PYTHONPATH=src .venv/bin/python -m pytest -vv
 OR
 .venv/bin/python -m pytest -vv
+.venv/bin/python -m pytest tests/pipelines/test_recon.py -s (for print statements)
 .venv/bin/python -m pytest -q
 (.venv) ../../security_recon $  .venv/bin/python -m pytest -q
 3 passed in 0.76s
