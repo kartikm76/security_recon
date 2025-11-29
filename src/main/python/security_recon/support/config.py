@@ -3,11 +3,8 @@ from __future__ import annotations
 
 from functools import lru_cache
 from typing import Any, Dict
-
-import yaml
-
 from .paths import resource_path
-
+import yaml
 
 @lru_cache(maxsize=1)
 def load_config(config_name: str = "application.yml") -> Dict[str, Any]:
