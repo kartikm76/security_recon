@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from sqlalchemy import Date, Integer
+from sqlalchemy import Date, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -17,7 +17,7 @@ class ReconRunSummary(Base):
     __tablename__ = "recon_run_summary"
     __table_args__ = {"schema": "security_master"}
 
-    run_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    run_id: Mapped[str] = mapped_column(String(255), primary_key=True)
     as_of_date: Mapped[date] = mapped_column(Date, primary_key=True)
     total_exceptions: Mapped[int] = mapped_column(Integer)
     unexplained_exceptions: Mapped[int] = mapped_column(Integer)

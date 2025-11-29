@@ -68,9 +68,9 @@ class DataFrameDiffer:
         merged_df = pd.merge(
             legacy_df,
             strategic_df,
-            on=KEY_COLS,
-            how="outer",
-            indicator=True,
+            on = KEY_COLS,
+            how = "outer",
+            indicator = True,
         )
 
         records: List[dict] = []

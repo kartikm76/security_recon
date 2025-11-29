@@ -14,7 +14,7 @@ class MetricsRepository:
     def __init__(self) -> None:
         self.db_service = DatabaseService()
 
-    def compute_metrics(self, ex_df: pd.DataFrame, run_id: int, as_of_date: date) -> MetricsPayload:
+    def compute_metrics(self, ex_df: pd.DataFrame, run_id: str, as_of_date: date) -> MetricsPayload:
         total = len(ex_df)
         unexplained = total
         return MetricsPayload(

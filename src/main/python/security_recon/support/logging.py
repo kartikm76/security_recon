@@ -9,6 +9,9 @@ from .config import load_config
 
 F = TypeVar("F", bound=Callable[..., Any])
 
+_LOG_FORMAT = "%(asctime)s %(levelname)s-%(message)s"
+_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 
 class LoggingManager:
     _initialized: bool = False
@@ -28,7 +31,12 @@ class LoggingManager:
         level = cls._resolve_level(settings)
         cls._current_level = level
 
-        logging.basicConfig(level=level)
+        logging.basicConfig(
+            level=level,
+            format=_LOG_FORMAT,
+            datefmt=_DATE_FORMAT,
+            force=force,
+        )
         logging.getLogger().setLevel(level)
         cls._initialized = True
 
