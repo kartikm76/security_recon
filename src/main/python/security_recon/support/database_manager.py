@@ -2,18 +2,16 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 from typing import Dict
 from urllib.parse import quote_plus
 
-import yaml
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .logging import get_logger
-from .paths import resource_path
+from .config import load_config
 
 logger = get_logger(__name__)
 
@@ -22,18 +20,10 @@ class DatabaseManager:
     """Builds engines and scoped sessions for connections defined in application.yml."""
 
     def __init__(self, config_name: str = "application.yml"):
-        self._config_path = resource_path(config_name)
-        self._cfg = self._load_yaml()
+        self._cfg = load_config(config_name)
         self.engines: Dict[str, Engine] = {}
         self.sessions: Dict[str, scoped_session] = {}
         self._build_all()
-
-    def _load_yaml(self) -> dict:
-        if not self._config_path.exists():
-            logger.warning("Database config not found at %s", self._config_path)
-            return {}
-        with self._config_path.open("r", encoding="utf-8") as fh:
-            return yaml.safe_load(fh) or {}
 
     @staticmethod
     def _build_url(conf: dict) -> str:

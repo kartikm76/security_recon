@@ -2,24 +2,16 @@
 from __future__ import annotations
 
 from datetime import date
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict
 
 import pandas as pd
-import yaml
 
-from security_recon.support.paths import resource_path
+from security_recon.support.config import load_config
 
 
-@lru_cache(maxsize=1)
 def _load_exception_config() -> Dict[str, Any]:
-    config_path = resource_path("application.yml")
-    if not config_path.exists():
-        return {}
-    with config_path.open("r", encoding="utf-8") as fh:
-        data = yaml.safe_load(fh) or {}
-    return data.get("exception_file", {}) or {}
+    return load_config().get("exception_file", {}) or {}
 
 
 class ParquetWriter:

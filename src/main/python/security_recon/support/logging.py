@@ -1,85 +1,88 @@
-"""Project-wide logging helper driven by src/main/resources/application.yml."""
+"""Small logging helper that reads settings from ``application.yml``."""
 from __future__ import annotations
 
 import logging
-import os
-from pathlib import Path
-from typing import Any, Dict, Optional
+from functools import wraps
+from typing import Any, Callable, Dict, Optional, TypeVar
 
-import yaml
+from .config import load_config
 
-from .paths import resource_path
-
-_DEFAULT_CONFIG_PATH = resource_path("application.yml")
-_INITIALIZED = False
-_CURRENT_LEVEL = logging.INFO
-
-_BOOL_TRUE = {"1", "true", "yes", "on"}
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-def _load_logging_config(config_path: Optional[Path] = None) -> Dict[str, Any]:
-    path = config_path or _DEFAULT_CONFIG_PATH
-    if not path.exists():
-        return {}
-    with path.open("r", encoding="utf-8") as fh:
-        data = yaml.safe_load(fh) or {}
-    return data.get("logging", {}) or {}
+class LoggingManager:
+    _initialized: bool = False
+    _current_level: int = logging.INFO
 
+    """
+    @classmethod tells Python to pass the class object itself as the first argument (cls).
+    With that access, the method can look at and update class-level state such as _initialized and _current_level, so the configuration applies to every LoggingManager user without needing instances.
+    Because everything is stored at the class level, we never have to instantiate the class; callers just use LoggingManager.configure() / .get_logger() and share the same cached configuration.
+    """
+    @classmethod
+    def configure(cls, *, force: bool = False) -> None:
+        if cls._initialized and not force:
+            return
 
-def _determine_level(config: Dict[str, Any]) -> int:
-    env_level = os.getenv("APP_LOG_LEVEL") or os.getenv("DB_LOG_LEVEL")
-    if env_level:
-        return getattr(logging, env_level.upper(), logging.INFO)
+        settings = load_config().get("logging", {}) or {}
+        level = cls._resolve_level(settings)
+        cls._current_level = level
 
-    if "level" in config:
-        return getattr(logging, str(config["level"]).upper(), logging.INFO)
+        logging.basicConfig(level=level)
+        logging.getLogger().setLevel(level)
+        cls._initialized = True
 
-    env_debug = os.getenv("APP_DEBUG") or os.getenv("DB_DEBUG")
-    if env_debug is not None:
-        if str(env_debug).strip().lower() in _BOOL_TRUE:
+    @classmethod
+    def get_logger(cls, name: Optional[str] = None) -> logging.Logger:
+        if not cls._initialized:
+            cls.configure()
+        logger = logging.getLogger(name)
+        logger.setLevel(cls._current_level)
+        return logger
+
+    @classmethod
+    def set_level(cls, level: int) -> None:
+        cls._current_level = level
+        logging.getLogger().setLevel(level)
+
+    @staticmethod
+    def _resolve_level(config: Dict[str, Any]) -> int:
+        level_name = config.get("level")
+        if level_name:
+            return getattr(logging, str(level_name).upper(), logging.INFO)
+        if config.get("debug"):
             return logging.DEBUG
         return logging.INFO
 
-    yaml_debug = config.get("debug") or config.get("db_debug")
-    if yaml_debug:
-        return logging.DEBUG
 
-    return logging.INFO
+def log_calls(level: int = logging.DEBUG) -> Callable[[F], F]:  ## decorator factory to choose the log level (default DEBUG) and it returns a decorator.
+
+    def decorator(func: F) -> F:                                # decorator that wraps the function
+        @wraps(func)                                            # preserves metadata of the original function
+        def wrapper(*args, **kwargs):                           # actual wrapper function
+            logger = LoggingManager.get_logger(func.__module__)
+            qualified_name = func.__qualname__
+            logger.log(level, "Entering %s", qualified_name)
+            try:
+                result = func(*args, **kwargs)
+                logger.log(level, "Exiting %s", qualified_name)
+                return result
+            except Exception:  # noqa: BLE001
+                logger.exception("Error in %s", qualified_name)
+                raise
+
+        return wrapper  # type: ignore[return-value]
+
+    return decorator
 
 
-def configure_logging(config_path: Optional[Path] = None, force: bool = False) -> None:
-    global _INITIALIZED, _CURRENT_LEVEL
-    if _INITIALIZED and not force:
-        return
-
-    cfg = _load_logging_config(config_path)
-    level = _determine_level(cfg)
-    _CURRENT_LEVEL = level
-
-    logging.basicConfig(level=level)
-    _INITIALIZED = True
-
-    root = logging.getLogger()
-    root.setLevel(level)
-
-    extra_fields = {
-        "level": logging.getLevelName(level),
-        "config_path": str(config_path or _DEFAULT_CONFIG_PATH),
-        "debug_flag": cfg.get("debug") or cfg.get("db_debug") or False,
-    }
-    logging.getLogger(__name__).debug("Logging configured: %s", extra_fields)
+def configure_logging(force: bool = False) -> None:
+    LoggingManager.configure(force=force)
 
 
 def get_logger(name: Optional[str] = None) -> logging.Logger:
-    if not _INITIALIZED:
-        configure_logging()
-    logger = logging.getLogger(name)
-    logger.setLevel(_CURRENT_LEVEL)
-    return logger
+    return LoggingManager.get_logger(name)
 
 
 def set_level(level: int) -> None:
-    """Manually override the global logging level at runtime."""
-    global _CURRENT_LEVEL
-    _CURRENT_LEVEL = level
-    logging.getLogger().setLevel(level)
+    LoggingManager.set_level(level)

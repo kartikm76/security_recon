@@ -15,6 +15,10 @@ connections:
     port: 5432
     database: postgres
 
+s3:
+  bucket: security-recon-bucket
+  prefix: results
+
 logging:
   debug: true        # enable DEBUG everywhere
   level: INFO        # optional explicit level
@@ -22,4 +26,3 @@ logging:
 exception_file:
   directory: ./resources/parquet
   filename: exceptions.<runid>.<yyyymmdd>.parquet
-
