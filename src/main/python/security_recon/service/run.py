@@ -13,7 +13,7 @@ from security_recon.repositories.security_repository import (
     LegacySecurityRepository,
     StrategicSecurityRepository,
 )
-from security_recon.service.database_service import DatabaseService
+from security_recon.support.database_service import DatabaseService
 from security_recon.service.recon import DataFrameDiffer
 
 class PipelineRunner:

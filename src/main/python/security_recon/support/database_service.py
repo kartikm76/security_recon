@@ -15,5 +15,3 @@ class DatabaseService:
         self.mysql_session_factory.remove()
         self.postgres_session_factory.remove()
         self.manager.dispose_all()
-
-__all__ = ["DatabaseService"]

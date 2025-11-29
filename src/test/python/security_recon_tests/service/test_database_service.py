@@ -7,7 +7,7 @@ from typing import Iterator
 import pytest
 from sqlalchemy import text
 
-from security_recon.service.database_service import DatabaseService
+from security_recon.support.database_service import DatabaseService
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SECURITY_RECON_DB_TESTS", "0") != "1",

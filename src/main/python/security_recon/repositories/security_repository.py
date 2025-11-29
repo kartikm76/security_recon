@@ -6,8 +6,7 @@ from datetime import date
 import pandas as pd
 from sqlalchemy import text
 
-from security_recon.service.database_service import DatabaseService
-
+from security_recon.support.database_service import DatabaseService
 
 class LegacySecurityRepository:
     def __init__(self) -> None:

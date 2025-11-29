@@ -2,34 +2,36 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Dict
 
 import pandas as pd
-from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-from security_recon.service.database_service import DatabaseService
+from security_recon.domain.metrics import MetricsPayload
+from security_recon.repositories.models import ReconRunSummary
+from security_recon.support.database_service import DatabaseService
 
 class MetricsRepository:
     def __init__(self) -> None:
         self.db_service = DatabaseService()
 
-    def compute_metrics(self, ex_df: pd.DataFrame, run_id: int, as_of_date: date) -> Dict[str, int]:
+    def compute_metrics(self, ex_df: pd.DataFrame, run_id: int, as_of_date: date) -> MetricsPayload:
         total = len(ex_df)
         unexplained = total
-        return {
-            "run_id": run_id,
-            "as_of_date": as_of_date,
-            "total_exceptions": int(total),
-            "unexplained_exceptions": int(unexplained),
-        }
-
-    def persist_metrics(self, metrics: Dict[str, int]) -> None:
-        sql = text(
-            """
-            INSERT INTO security_master.recon_run_summary
-                   (run_id, as_of_date, total_exceptions, unexplained_exceptions)
-            VALUES (:run_id, :as_of_date, :total_exceptions, :unexplained_exceptions)
-            """
+        return MetricsPayload(
+            run_id=run_id,
+            as_of_date=as_of_date,
+            total_exceptions=int(total),
+            unexplained_exceptions=int(unexplained),
         )
-        with self.db_service.postgres_engine.begin() as connection:
-            connection.execute(sql, metrics)
+
+    def persist_metrics(self, metrics: MetricsPayload) -> None:
+        session: Session = self.db_service.postgres_session_factory()
+        try:
+            record = ReconRunSummary(**metrics.model_dump())
+            session.merge(record)
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            self.db_service.postgres_session_factory.remove()
