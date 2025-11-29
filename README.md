@@ -1,61 +1,54 @@
 ## Setup
-```bash
-source .venv/bin/activate
-python3 -m pip install -r requirements.txt
-```
-## Execution
-```bash
-PYTHONPATH=src .venv/bin/python
-python3 application.py
 
 ```bash
-PYTHONPATH=src .venv/bin/python -m pytest -vv
-OR
-.venv/bin/python -m pytest -vv
-.venv/bin/python -m pytest tests/pipelines/test_recon.py -s (for print statements)
+source .venv/bin/activate
+.venv/bin/python -m pip install -e .[dev]
+```
+
+## Running the application
+
+Runtime code now lives under `src/main/python/security_recon` and is installed in editable mode, so the package is importable everywhere in the virtualenv once the setup steps above are complete.
+
+```bash
+.venv/bin/python application.py
+```
+
+### Tests
+
+Primary test suites live in `src/test/python/security_recon_tests`. Run everything with:
+
+```bash
 .venv/bin/python -m pytest -q
-(.venv) ../../security_recon $  .venv/bin/python -m pytest -q
-3 passed in 0.76s
+```
+
+Useful variations:
+
+```bash
+.venv/bin/python -m pytest -vv
 ```
 
 ## Project layout
+
 ```
 security_recon/
-├── app/
-│   ├── backend.py          # FastAPI async service layer
-│   ├── cli.py              # CLI runner (python app/cli.py --date ...)
-│   ├── streamlit_app.py    # UI layer
-│   └── __init__.py
-│
-├── application.py          # Global entrypoint (optional)
-│
-├── core/
-│   ├── database.py         # Engine/connection builders (MySQL/Postgres)
-│   ├── logging.py          # Unified logging configuration
-│   └── __init__.py
-│
-├── parquet/                # Local parquet output (Phase 1)
-│
-├── pipelines/              # Core recon engine (OO)
-│   ├── extract.py          # Repositories (MySQL + Postgres)
-│   ├── dictionary.py       # Rule loading (YAML)
-│   ├── diff.py             # DiffEngine (attribute comparison)
-│   ├── classify.py         # Classification layer (match / explainable)
-│   ├── io_parquet.py       # ParquetWriter
-│   ├── metrics.py          # MetricsCalculator + MetricsRepository
-│   ├── run.py              # ReconciliationEngine (sync)
-│   └── __init__.py
-│
-├── services/
-│   ├── database_service.py # Additional helper for DB ops (if needed)
-│   └── __init__.py
-│
-├── resources/
-│   ├── application.yml     # DB URLs, parquet path, FastAPI configs
-│   └── data_dictionary.yml # transformation + tolerance rules
-│
-├── requirements.txt
+├── application.py                       # Convenience entrypoint delegating to controller
+├── src/
+│   ├── main/
+│   │   ├── python/
+│   │   │   └── security_recon/
+│   │   │       ├── controller/          # CLI/diagnostics entry points
+│   │   │       ├── domain/              # Data dictionary rules
+│   │   │       ├── integration/         # External adapters (Parquet writer, etc.)
+│   │   │       ├── repositories/        # DB-backed repositories
+│   │   │       ├── service/             # Pipeline runner and business logic
+│   │   │       └── support/             # Logging, database, path utilities
+│   │   └── resources/
+│   │       ├── application.yml          # DB URLs, parquet settings, logging config
+│   │       └── data_dictionary.yml      # Attribute rules
+│   └── test/
+│       └── python/
+│           └── security_recon_tests/
+│               └── pipelines/           # Pytest suites mirroring src/main structure
+├── pytest.ini
 └── README.md
 ```
-
-This keeps infrastructure code in `core`, business services in `services`, orchestration/entrypoints in `app`, and domain-specific pipelines under `pipelines`.
