@@ -3,12 +3,9 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict
-
-import yaml
-
 from security_recon.domain.dictionary import AttributeRule, AttributeRuleSet
 from security_recon.support.paths import resource_path
-
+import yaml
 
 def _build_rule_set(config: Dict[str, Any]) -> AttributeRuleSet:
     attributes = config.get("attributes", {}) or {}

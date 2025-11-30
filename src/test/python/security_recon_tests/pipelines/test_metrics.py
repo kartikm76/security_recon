@@ -1,8 +1,8 @@
 from datetime import date
 from typing import Generator
 
-import pandas as pd
 import pytest
+import pandas as pd
 from sqlalchemy import text
 
 from security_recon.domain.metrics import MetricsPayload

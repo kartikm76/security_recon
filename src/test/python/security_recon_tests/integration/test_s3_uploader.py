@@ -1,12 +1,8 @@
 from __future__ import annotations
-
 from pathlib import Path
 
-import pytest
 from botocore.exceptions import ClientError
-
 from security_recon.integration.s3_uploader import S3Uploader
-
 
 class _FakeS3Client:
     def __init__(self) -> None:

@@ -3,6 +3,7 @@
 from .dictionary import AttributeRule, AttributeRuleSet
 from .dictionary_loader import load_rules_from_resource, load_rules_from_yaml
 from .metrics import MetricsPayload
+from .artifact import Artifact
 
 __all__ = [
 	"AttributeRule",
@@ -10,4 +11,5 @@ __all__ = [
 	"load_rules_from_resource",
 	"load_rules_from_yaml",
 	"MetricsPayload",
+    "Artifact",
 ]

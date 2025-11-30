@@ -7,7 +7,6 @@ from typing import Mapping
 @dataclass
 class AttributeRule:
     """Rule for validating an attribute in a data dictionary."""
-
     name: str
     type: str
     tolerance: float | None = None

@@ -1,9 +1,7 @@
 from datetime import date
 from pathlib import Path
-
-import pandas as pd
-
 from security_recon.integration.parquet_writer import ParquetWriter
+import pandas as pd
 
 
 def test_write_to_parquet(tmp_path: Path) -> None:
