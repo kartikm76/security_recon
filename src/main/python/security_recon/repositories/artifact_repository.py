@@ -7,7 +7,7 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from security_recon.repositories.models import ArtifactLog
+from security_recon.repositories.data_models import ArtifactLog
 from security_recon.support.database_service import DatabaseService
 
 

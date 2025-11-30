@@ -10,7 +10,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase):
     """Shared declarative base for ORM models."""
 
-
 class ReconRunSummary(Base):
     """ORM mapping for security_master.recon_run_summary."""
 

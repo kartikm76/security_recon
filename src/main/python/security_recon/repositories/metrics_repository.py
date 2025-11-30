@@ -7,7 +7,7 @@ import pandas as pd
 from sqlalchemy.orm import Session
 
 from security_recon.domain.metrics import MetricsPayload
-from security_recon.repositories.models import ReconRunSummary
+from security_recon.repositories.data_models import ReconRunSummary
 from security_recon.support.database_service import DatabaseService
 
 class MetricsRepository:

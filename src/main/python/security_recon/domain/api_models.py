@@ -13,9 +13,15 @@ class RunCreateResponse(BaseModel):
     as_of_date: date
     status: str = "PENDING"
 
+class RunSummaryResponse(BaseModel):
+    run_id: str
+    as_of_date: date    
+    total_exceptions: int
+    unexplained_exceptions: int
+
 class RunIdsForDateResponse(BaseModel):
     as_of_date: date
-    run_ids: List[str] = Field(default_factory=list)
+    runs: List[RunSummaryResponse]
 
 class RunS3URIResponse(BaseModel):
     run_id: str
