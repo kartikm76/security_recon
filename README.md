@@ -73,3 +73,14 @@ curl "http://127.0.0.1:8000/run-ids/?as_of_date=2023-12-30"
 ```
 curl "http://127.0.0.1:8000/runs/<run_id>/artifact"
 ```
+
+## Docker
+# Build the Docker image
+```
+docker build -t security-recon-api .
+```
+
+# Run the image
+```
+docker run --rm -p 8000:8000   -e POSTGRES_DATABASE_URL="postgresql+psycopg://postgres:Postgres%40XXXX@host.docker.internal:5432/postgres"   -e MYSQL_DATABASE_URL="mysql+pymysql://root:Guruji%40XXXX@host.docker.internal:3306/legacy_security_master"   security-recon-api:latest
+```

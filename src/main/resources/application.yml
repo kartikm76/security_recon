@@ -3,14 +3,14 @@ connections:
   mysql:
     driver: mysql+pymysql
     user: root
-    password: "Guruji@1947"   # keep quoted
+    password: "Guruji@XXXX"   # keep quoted
     host: 127.0.0.1
     port: 3306
     database: legacy_security_master
   postgres:
     driver: postgresql+psycopg       # psycopg v3
     user: postgres
-    password: "Postgres@2876"
+    password: "Postgres@XXXX"
     host: 127.0.0.1
     port: 5432
     database: postgres
