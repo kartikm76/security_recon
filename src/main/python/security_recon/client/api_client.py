@@ -39,9 +39,8 @@ class SecurityReconApiClient:
         params = {"as_of_date": as_of_date.isoformat()}
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
-        data = response.json()
-        return data.get("run_ids", [])
-    
+        return response.json()
+            
     def get_run_artifact(self, run_id: str) -> Optional[Artifact]:
         """
         Retrieve the latest artifact information for the specified run ID.

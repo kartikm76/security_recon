@@ -15,7 +15,6 @@ class RunCreateResponse(BaseModel):
 
 class RunSummaryResponse(BaseModel):
     run_id: str
-    as_of_date: date    
     total_exceptions: int
     unexplained_exceptions: int
 

@@ -55,3 +55,21 @@ security_recon/
 │           └── security_recon_tests/    # Pytest suites mirroring src/main structure
 └── uv.lock                              # Environment lockfile for uv
 ```
+
+## Sample Curl Commands
+# POST /runs/ – start a run for an as-of date
+```
+curl -X POST "http://127.0.0.1:8000/runs/" \
+  -H "Content-Type: application/json" \
+  -d '{"as_of_date": "2023-12-30"}'
+```
+
+# GET /run-ids/ – list run summaries for a date
+```
+curl "http://127.0.0.1:8000/run-ids/?as_of_date=2023-12-30"
+```
+
+# GET /runs/{run_id}/artifact – fetch latest artifact for a run
+```
+curl "http://127.0.0.1:8000/runs/<run_id>/artifact"
+```

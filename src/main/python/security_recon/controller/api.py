@@ -84,8 +84,7 @@ def _get_runs_as_of_date(as_of_date: date) -> list[RunSummaryResponse]:
         summaries = session.execute(stmt).scalars().all()
         return [
             RunSummaryResponse(
-                run_id = summary.run_id,
-                as_of_date = summary.as_of_date,                
+                run_id=summary.run_id,
                 total_exceptions=summary.total_exceptions,
                 unexplained_exceptions=summary.unexplained_exceptions,
             )
